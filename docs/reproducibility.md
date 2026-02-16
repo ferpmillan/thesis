@@ -4,7 +4,7 @@
 
 - Language: R
 - Main execution script: `scripts/00_run_all.R`
-- Seed: `191023` (set in `R/00_setup.R` ans in various parts of the code)
+- Seed: `191023` (set in `R/00_setup.R` and in various parts of the code)
 
 ## Required packages
 
