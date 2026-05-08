@@ -48,6 +48,13 @@ z2_gjr_train   <- as.numeric(z_gjr)^2
 acf_garch <- acf(z2_garch_train, lag.max = 100, plot = FALSE)
 acf_gjr   <- acf(z2_gjr_train,   lag.max = 100, plot = FALSE)
 
+# Perform Ljung-Box test ons squared standardized returns
+ljung_box_result2 <- Box.test(z2_garch_train, lag = m, type = "Ljung-Box")
+print(ljung_box_result2)
+
+ljung_box_result3 <- Box.test(z2_gjr_train, lag = m, type = "Ljung-Box")
+print(ljung_box_result3)
+
 # Build dataframes for plotting
 acf_df_garch <- data.frame(
   Lag = acf_garch$lag[-1],
@@ -75,7 +82,7 @@ acf_df_gjr$Lower <- -conf_bound_gjr
 
 # Figure 4.1: Autocorrelation of squared returns over variance (2014-2024), GARCH(1,1).
 ggplot(acf_df_garch, aes(x = Lag, y = ACF)) +
-  geom_line(color = "deepskyblue3", linewidth = 1) +
+  geom_col(fill = "deepskyblue3", color = "black", width = 0.7) +
   geom_hline(yintercept = 0, linetype = "dashed", color = "black") +
   geom_hline(aes(yintercept = Upper), linetype = "dashed", color = "gray40") +
   geom_hline(aes(yintercept = Lower), linetype = "dashed", color = "gray40") +
@@ -92,7 +99,7 @@ ggplot(acf_df_garch, aes(x = Lag, y = ACF)) +
 
 # Figure 4.2: Autocorrelation of squared returns over variance (2014-2024), GJR-GARCH(1,1).
 ggplot(acf_df_gjr, aes(x = Lag, y = ACF)) +
-  geom_line(color = "deepskyblue3", linewidth = 1) +
+  geom_col(fill = "deepskyblue3", color = "black", width = 0.7) +
   geom_hline(yintercept = 0, linetype = "dashed", color = "black") +
   geom_hline(aes(yintercept = Upper), linetype = "dashed", color = "gray40") +
   geom_hline(aes(yintercept = Lower), linetype = "dashed", color = "gray40") +
