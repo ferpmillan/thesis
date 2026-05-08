@@ -1571,13 +1571,15 @@ plot_var <- function(df, var_col, breach_col, title, color) {
       aes(y = Returns),
       shape = 21, fill = "white", color = color, stroke = 1.2, size = 2.5
     ) +
-    scale_x_date(date_labels = "%b") +  # show only month abbrev (Jan, Feb, ...)
-    labs(x = "Month", y = "Log Return") +
+    scale_x_date(date_breaks = "2 months", date_labels = "%b-%Y") +
+    labs(title = title, x = "", y = "Log Return") +
     theme_tufte(base_family = "Times") +
     theme(panel.grid = element_blank(),
           axis.line = element_line(color = "black"),
           axis.text = element_text(size = 20),
+          axis.text.x = element_text(angle = 45, hjust = 1),
           axis.title = element_text(size = 22),
+          plot.title = element_text(size = 18, hjust = 0.5),
           text = element_text(size = 18))
 }
 
