@@ -109,6 +109,11 @@ aligned <- na.omit(merge(
 colnames(aligned) <- c("z1", "z2")
 
 quantiles <- seq(0.1, 0.9, by = 0.01)
+threshold_tail_segment <- ifelse(
+  quantiles < 0.5,
+  "Lower tail",
+  ifelse(quantiles > 0.5, "Upper tail", NA_character_)
+)
 
 threshold_corr <- sapply(quantiles, function(p) {
   q1 <- quantile(aligned$z1, p)
@@ -127,9 +132,16 @@ threshold_corr <- sapply(quantiles, function(p) {
   }
 })
 
-df_threshold <- data.frame(Quantile = quantiles, Correlation = threshold_corr)
+df_threshold <- data.frame(
+  Quantile = quantiles,
+  Correlation = threshold_corr,
+  Tail = threshold_tail_segment
+)
 
-ggplot(df_threshold, aes(x = Quantile, y = Correlation)) +
+ggplot(
+  subset(df_threshold, !is.na(Tail)),
+  aes(x = Quantile, y = Correlation, group = Tail)
+) +
   geom_line(color = "deepskyblue3", linewidth = 1) +
   geom_hline(yintercept = 0, linetype = "dashed") +
   labs(y = "Threshold correlation", x = "Quantile") +
@@ -228,6 +240,7 @@ thresh_corr_sim <- sapply(quantiles, function(p) {
 df_sim_threshold <- data.frame(
   Quantile = quantiles,
   Correlation = thresh_corr_sim,
+  Tail = threshold_tail_segment,
   Type = "Simulated"
 )
 
@@ -269,6 +282,7 @@ thresh_corr_sim_gjr <- sapply(quantiles, function(p) {
 df_sim_gjr_threshold <- data.frame(
   Quantile = quantiles,
   Correlation = thresh_corr_sim_gjr,
+  Tail = threshold_tail_segment,
   Type = "Simulated"
 )
 
@@ -301,7 +315,8 @@ threshold_corr_gjr <- sapply(quantiles, function(p) {
 
 df_threshold_gjr <- data.frame(
   Quantile = quantiles,
-  Correlation = threshold_corr_gjr
+  Correlation = threshold_corr_gjr,
+  Tail = threshold_tail_segment
 )
 
 
@@ -311,7 +326,10 @@ threshold_plot_df_gjr <- rbind(
 )
 
 # Figure 5.3: Empirical and simulated threshold correlations of GARCH-GARCH copula.
-ggplot(threshold_plot_df, aes(x = Quantile, y = Correlation, color = Type)) +
+ggplot(
+  subset(threshold_plot_df, !is.na(Tail)),
+  aes(x = Quantile, y = Correlation, color = Type, group = interaction(Type, Tail))
+) +
   geom_line(linewidth = 1) +
   scale_color_manual(values = c("Empirical" = "deepskyblue3", "Simulated" = "red")) +
   geom_hline(yintercept = 0, linetype = "dashed") +
@@ -327,7 +345,10 @@ ggplot(threshold_plot_df, aes(x = Quantile, y = Correlation, color = Type)) +
         legend.position = "right")
 
 # Figure 5.4: Empirical and simulated threshold correlations of GJR-GJR copula.
-ggplot(threshold_plot_df_gjr, aes(x = Quantile, y = Correlation, color = Type)) +
+ggplot(
+  subset(threshold_plot_df_gjr, !is.na(Tail)),
+  aes(x = Quantile, y = Correlation, color = Type, group = interaction(Type, Tail))
+) +
   geom_line(linewidth = 1) +
   scale_color_manual(values = c("Empirical" = "deepskyblue3", "Simulated" = "red")) +
   geom_hline(yintercept = 0, linetype = "dashed") +
