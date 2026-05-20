@@ -326,11 +326,17 @@ threshold_plot_df_gjr <- rbind(
 )
 
 # Figure 5.3: Empirical and simulated threshold correlations of GARCH-GARCH copula.
-ggplot(
-  subset(threshold_plot_df, !is.na(Tail)),
-  aes(x = Quantile, y = Correlation, color = Type, group = interaction(Type, Tail))
-) +
-  geom_line(linewidth = 1) +
+ggplot() +
+  geom_line(
+    data = subset(threshold_plot_df, Type == "Empirical" & !is.na(Tail)),
+    aes(x = Quantile, y = Correlation, color = Type, group = Tail),
+    linewidth = 1
+  ) +
+  geom_line(
+    data = subset(threshold_plot_df, Type == "Simulated"),
+    aes(x = Quantile, y = Correlation, color = Type),
+    linewidth = 1
+  ) +
   scale_color_manual(values = c("Empirical" = "deepskyblue3", "Simulated" = "red")) +
   geom_hline(yintercept = 0, linetype = "dashed") +
   labs(y = "Threshold correlation", x = "Quantile") +
@@ -345,11 +351,17 @@ ggplot(
         legend.position = "right")
 
 # Figure 5.4: Empirical and simulated threshold correlations of GJR-GJR copula.
-ggplot(
-  subset(threshold_plot_df_gjr, !is.na(Tail)),
-  aes(x = Quantile, y = Correlation, color = Type, group = interaction(Type, Tail))
-) +
-  geom_line(linewidth = 1) +
+ggplot() +
+  geom_line(
+    data = subset(threshold_plot_df_gjr, Type == "Empirical" & !is.na(Tail)),
+    aes(x = Quantile, y = Correlation, color = Type, group = Tail),
+    linewidth = 1
+  ) +
+  geom_line(
+    data = subset(threshold_plot_df_gjr, Type == "Simulated"),
+    aes(x = Quantile, y = Correlation, color = Type),
+    linewidth = 1
+  ) +
   scale_color_manual(values = c("Empirical" = "deepskyblue3", "Simulated" = "red")) +
   geom_hline(yintercept = 0, linetype = "dashed") +
   labs(y = "Threshold correlation", x = "Quantile") +
